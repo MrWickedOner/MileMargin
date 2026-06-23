@@ -1,5 +1,5 @@
 import localforage from 'localforage'
-import type { Load, Expense, DetentionLog, RateEvaluation, Route, FuelBurnEstimate, ComplianceDocument, UserSettings, TripStateSegment } from './types'
+import type { Load, Expense, DetentionLog, RateEvaluation, Route, FuelBurnEstimate, DVIRInspection, ComplianceDocument, UserSettings, TripStateSegment } from './types'
 
 // Configure localforage stores
 const loadStore = localforage.createInstance({ name: 'milemargin', storeName: 'loads' })
@@ -8,6 +8,7 @@ const detentionStore = localforage.createInstance({ name: 'milemargin', storeNam
 const rateEvalStore = localforage.createInstance({ name: 'milemargin', storeName: 'rateEvals' })
 const routeStore = localforage.createInstance({ name: 'milemargin', storeName: 'routes' })
 const complianceStore = localforage.createInstance({ name: 'milemargin', storeName: 'compliance' })
+const dvirStore = localforage.createInstance({ name: 'milemargin', storeName: 'dvir' })
 const settingsStore = localforage.createInstance({ name: 'milemargin', storeName: 'settings' })
 
 // ============ Loads ============
@@ -157,6 +158,26 @@ export function computeDocStatus(expirationDate: string): 'active' | 'expiring' 
 export async function getActiveComplianceAlerts(): Promise<number> {
   const docs = await getComplianceDocuments()
   return docs.filter(d => d.status !== 'active').length
+}
+
+// ============ DVIR (Driver Vehicle Inspection Reports) ============
+
+export async function getDVIRInspections(): Promise<DVIRInspection[]> {
+  const items: DVIRInspection[] = []
+  await dvirStore.iterate<DVIRInspection, void>((value) => { items.push(value) })
+  return items.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+}
+
+export async function getDVIRInspection(id: string): Promise<DVIRInspection | null> {
+  return dvirStore.getItem<DVIRInspection>(id)
+}
+
+export async function saveDVIRInspection(inspection: DVIRInspection): Promise<void> {
+  await dvirStore.setItem(inspection.id, inspection)
+}
+
+export async function deleteDVIRInspection(id: string): Promise<void> {
+  await dvirStore.removeItem(id)
 }
 
 // ============ Fuel Burn Calculations ============
