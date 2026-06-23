@@ -315,3 +315,53 @@ export async function getRateEvaluationsThisMonth(): Promise<number> {
   const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
   return all.filter(e => e.createdAt >= firstOfMonth).length
 }
+// ============ IFTA Tax Helper ============
+
+const STATE_TAX_RATES: Record<string, number> = {
+  AL:28, AK:8.95, AZ:26, AR:28.5, CA:63, CO:28, CT:37,
+  DE:24, FL:35.5, GA:31, HI:56, ID:33, IL:45, IN:33,
+  IA:32.5, KS:26, KY:30, LA:22, ME:32, MD:38.5, MA:30,
+  MI:31, MN:28.6, MS:22, MO:22.5, MT:30, NE:30, NV:33,
+  NH:24, NJ:38.5, NM:22, NY:42, NC:36, ND:23, OH:38.5,
+  OK:22, OR:36, PA:59, RI:36, SC:28, SD:30, TN:28,
+  TX:20, UT:32, VT:33, VA:30, WA:52, WV:37, WI:35, WY:24,
+}
+
+export function getStateTaxRates() { return { ...STATE_TAX_RATES } }
+
+export interface IFTADetailRow {
+  state: string; miles: number; taxRate: number
+  fuelConsumed: number; taxDue: number
+  gallonsPurchased: number; taxPaid: number; netTax: number
+}
+
+export interface IFTACalculationResult {
+  period: string; totalMiles: number; totalGallons: number
+  averageMpg: number; stateEntries: IFTADetailRow[]
+  totalTaxDue: number; totalTaxPaid: number; balance: number
+}
+
+export async function calculateIFTA(period: string, stateMiles: Record<string, number>) {
+  const expenses = await getExpenses()
+  const fuelExpenses = expenses.filter(e => e.category === 'fuel' && e.fuelGallons && e.fuelGallons > 0)
+  const totalMiles = Object.values(stateMiles).reduce((s, m) => s + m, 0)
+  const totalGallons = fuelExpenses.reduce((s, e) => s + (e.fuelGallons || 0), 0)
+  const avgMpg = totalGallons > 0 ? totalMiles / totalGallons : 6.5
+  const entries: IFTADetailRow[] = []
+  let totalDue = 0, totalPaid = 0
+  for (const [state, miles] of Object.entries(stateMiles)) {
+    if (miles <= 0) continue
+    const rate = STATE_TAX_RATES[state] || 25
+    const consumed = avgMpg > 0 ? miles / avgMpg : 0
+    const due = (consumed * rate) / 100
+    const purchased = fuelExpenses.filter(e => (e.fuelState||'').toUpperCase() === state).reduce((s, e) => s + (e.fuelGallons||0), 0)
+    const paid = (purchased * rate) / 100
+    totalDue += due; totalPaid += paid
+    entries.push({ state, miles, taxRate: rate, fuelConsumed: +consumed.toFixed(2), taxDue: +due.toFixed(2), gallonsPurchased: +purchased.toFixed(2), taxPaid: +paid.toFixed(2), netTax: +(paid - due).toFixed(2) })
+  }
+  return {
+    period, totalMiles, totalGallons: +totalGallons.toFixed(2), averageMpg: +avgMpg.toFixed(2),
+    stateEntries: entries.sort((a, b) => b.miles - a.miles),
+    totalTaxDue: +totalDue.toFixed(2), totalTaxPaid: +totalPaid.toFixed(2), balance: +(totalPaid - totalDue).toFixed(2),
+  } as IFTACalculationResult
+}
