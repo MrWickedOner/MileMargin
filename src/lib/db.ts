@@ -1,5 +1,5 @@
 import localforage from 'localforage'
-import type { Load, Expense, DetentionLog, RateEvaluation, Route, FuelBurnEstimate, UserSettings, TripStateSegment } from './types'
+import type { Load, Expense, DetentionLog, RateEvaluation, Route, FuelBurnEstimate, ComplianceDocument, UserSettings, TripStateSegment } from './types'
 
 // Configure localforage stores
 const loadStore = localforage.createInstance({ name: 'milemargin', storeName: 'loads' })
@@ -7,6 +7,7 @@ const expenseStore = localforage.createInstance({ name: 'milemargin', storeName:
 const detentionStore = localforage.createInstance({ name: 'milemargin', storeName: 'detentions' })
 const rateEvalStore = localforage.createInstance({ name: 'milemargin', storeName: 'rateEvals' })
 const routeStore = localforage.createInstance({ name: 'milemargin', storeName: 'routes' })
+const complianceStore = localforage.createInstance({ name: 'milemargin', storeName: 'compliance' })
 const settingsStore = localforage.createInstance({ name: 'milemargin', storeName: 'settings' })
 
 // ============ Loads ============
@@ -120,6 +121,42 @@ export async function getStateMileagesForPeriod(): Promise<TripStateSegment[]> {
   return Array.from(stateMap.entries())
     .map(([state, miles]) => ({ state, miles, fromPointIndex: 0, toPointIndex: 0 }))
     .sort((a, b) => b.miles - a.miles)
+}
+
+// ============ Compliance Documents ============
+
+export async function getComplianceDocuments(): Promise<ComplianceDocument[]> {
+  const items: ComplianceDocument[] = []
+  await complianceStore.iterate<ComplianceDocument, void>((value) => { items.push(value) })
+  return items.sort((a, b) => new Date(a.expirationDate).getTime() - new Date(b.expirationDate).getTime())
+}
+
+export async function getComplianceDocument(id: string): Promise<ComplianceDocument | null> {
+  return complianceStore.getItem<ComplianceDocument>(id)
+}
+
+export async function saveComplianceDocument(doc: ComplianceDocument): Promise<void> {
+  await complianceStore.setItem(doc.id, doc)
+}
+
+export async function deleteComplianceDocument(id: string): Promise<void> {
+  await complianceStore.removeItem(id)
+}
+
+/** Compute document status based on days until expiry */
+export function computeDocStatus(expirationDate: string): 'active' | 'expiring' | 'expired' {
+  const now = new Date()
+  const exp = new Date(expirationDate)
+  const daysUntilExpiry = Math.ceil((exp.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+  if (daysUntilExpiry < 0) return 'expired'
+  if (daysUntilExpiry <= 60) return 'expiring'
+  return 'active'
+}
+
+/** Get count of active expiring/expired alerts for free tier limiting */
+export async function getActiveComplianceAlerts(): Promise<number> {
+  const docs = await getComplianceDocuments()
+  return docs.filter(d => d.status !== 'active').length
 }
 
 // ============ Fuel Burn Calculations ============

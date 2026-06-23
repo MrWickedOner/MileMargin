@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard'
 import RateEvaluator from './pages/RateEvaluator'
 import Expenses from './pages/Expenses'
 import Detention from './pages/Detention'
+import Compliance from './pages/Compliance'
 import IFTA from './pages/IFTA'
 
 export default function App() {
@@ -16,6 +17,7 @@ export default function App() {
         {page === 'rate' && <RateEvaluator />}
         {page === 'expenses' && <Expenses />}
         {page === 'detention' && <Detention />}
+        {page === 'compliance' && <Compliance />}
         {page === 'ifta' && <IFTA />}
       </main>
       <Navbar active={page} onNavigate={setPage} />
