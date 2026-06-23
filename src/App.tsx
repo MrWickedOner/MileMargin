@@ -5,6 +5,7 @@ import RateEvaluator from './pages/RateEvaluator'
 import Expenses from './pages/Expenses'
 import Detention from './pages/Detention'
 import DVIR from './pages/DVIR'
+import GPSTracker from './pages/GPSTracker'
 import Compliance from './pages/Compliance'
 import IFTA from './pages/IFTA'
 
@@ -15,6 +16,7 @@ export default function App() {
     <div className="min-h-screen bg-slate-950 safe-top">
       <main className="max-w-lg mx-auto">
         {page === 'dashboard' && <Dashboard onNavigate={setPage} />}
+        {page === 'route' && <GPSTracker />}
         {page === 'dvir' && <DVIR />}
         {page === 'rate' && <RateEvaluator />}
         {page === 'expenses' && <Expenses />}
