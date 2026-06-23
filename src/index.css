@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+/* Custom scrollbar for the dark theme */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Safe area insets for notched devices */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Smooth transitions for theme */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Utility for active state on mobile buttons */
+@utility btn-active {
+  @apply active:scale-95 transition-transform duration-100;
+}
+
+/* Glass morphism utility for cards */
+@utility glass {
+  @apply bg-slate-800/60 backdrop-blur-md border border-slate-700/50;
+}
