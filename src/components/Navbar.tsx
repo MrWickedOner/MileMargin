@@ -1,4 +1,5 @@
 import { type JSX } from 'react'
+import { UserButton, useUser } from '@clerk/clerk-react'
 
 interface Tab {
   id: string
@@ -18,6 +19,8 @@ const tabs: Tab[] = [
 ]
 
 export default function Navbar({ active, onNavigate }: { active: string; onNavigate: (id: string) => void }) {
+  const { user } = useUser()
+
   return (
     <nav className="fixed bottom-0 inset-x-0 z-50 bg-slate-900/95 backdrop-blur-md border-t border-slate-700/50 safe-bottom">
       <div className="flex justify-around items-center h-16 max-w-lg mx-auto">
@@ -37,6 +40,20 @@ export default function Navbar({ active, onNavigate }: { active: string; onNavig
             </span>
           </button>
         ))}
+        {/* User avatar */}
+        <div className="flex flex-col items-center gap-0.5 px-2 py-1 min-w-0">
+          <UserButton
+            appearance={{
+              elements: {
+                userButtonAvatarBox: 'w-5 h-5',
+                userButtonTrigger: 'focus:shadow-none',
+              },
+            }}
+          />
+          <span className="text-[10px] font-medium text-slate-500 truncate max-w-full">
+            {user?.firstName || 'User'}
+          </span>
+        </div>
       </div>
     </nav>
   )
