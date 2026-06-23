@@ -247,6 +247,8 @@ export interface RateEvaluation {
   /** When evaluated */
   createdAt: string
 }
+
+/** Fuel burn estimate result */
 export interface FuelBurnEstimate {
   /** Distance in miles */
   miles: number
@@ -258,6 +260,29 @@ export interface FuelBurnEstimate {
   pricePerGallon: number
   /** Total fuel cost */
   totalFuelCost: number
+}
+
+/** A compliance/trucking authority document */
+export interface ComplianceDocument {
+  id: string
+  /** Document name (e.g. "MC/DOT Authority", "UCR") */
+  name: string
+  /** Issuing authority */
+  issuingAuthority: string
+  /** Reference/ID number */
+  referenceNumber: string
+  /** Expiration date (ISO 8601 date string) */
+  expirationDate: string
+  /** Status derived from expiration */
+  status: 'active' | 'expiring' | 'expired'
+  /** Notes */
+  notes?: string
+  /** When the document was added */
+  createdAt: string
+  /** Notification days before expiry */
+  notifyAtDays: number[] // e.g. [60, 30, 7]
+  /** Last notification dates sent (ISO 8601) */
+  lastNotifiedAt?: string[]
 }
 
 /** User settings */
