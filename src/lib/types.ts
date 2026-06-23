@@ -262,6 +262,56 @@ export interface FuelBurnEstimate {
   totalFuelCost: number
 }
 
+/** DVIR checklist item */
+export interface DVIRItem {
+  /** Category name (e.g. "Brakes", "Tires") */
+  category: string
+  /** Item name */
+  name: string
+  /** Pass/fail status */
+  status: 'pass' | 'fail' | 'na'
+  /** Optional note */
+  note?: string
+  /** Optional photo (base64 thumbnail) */
+  photo?: string
+}
+
+/** DVIR (Driver Vehicle Inspection Report) */
+export interface DVIRInspection {
+  id: string
+  /** Inspection type */
+  type: 'pre-trip' | 'post-trip'
+  /** Driver name */
+  driverName: string
+  /** Truck/vehicle number */
+  truckNumber: string
+  /** Odometer reading */
+  odometer: number
+  /** Trailers */
+  trailerNumber?: string
+  /** Inspection date/time */
+  date: string // ISO 8601
+  /** GPS coordinates */
+  latitude?: number
+  longitude?: number
+  /** Location name */
+  location?: string
+  /** Checklist items */
+  items: DVIRItem[]
+  /** Digital signature (base64 PNG) */
+  signature?: string
+  /** Total defects count */
+  defectCount: number
+  /** Overall status */
+  status: 'pass' | 'conditional' | 'fail'
+  /** Remarks */
+  remarks?: string
+  /** Mechanic signature if repairs needed */
+  mechanicSignature?: string
+  /** Created at */
+  createdAt: string
+}
+
 /** A compliance/trucking authority document */
 export interface ComplianceDocument {
   id: string

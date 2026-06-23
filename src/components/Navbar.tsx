@@ -8,9 +8,10 @@ interface Tab {
 
 const tabs: Tab[] = [
   { id: 'dashboard', label: 'Home', icon: <HomeIcon /> },
-  { id: 'rate', label: 'Rate Eval', icon: <CalcIcon /> },
+  { id: 'dvir', label: 'DVIR', icon: <ClipboardIcon /> },
+  { id: 'rate', label: 'Rate', icon: <CalcIcon /> },
   { id: 'expenses', label: 'Expenses', icon: <WalletIcon /> },
-  { id: 'detention', label: 'Detention', icon: <ClockIcon /> },
+  { id: 'detention', label: 'Wait', icon: <ClockIcon /> },
   { id: 'compliance', label: 'Compliance', icon: <ShieldIcon /> },
   { id: 'ifta', label: 'IFTA', icon: <TaxIcon /> },
 ]
@@ -80,6 +81,16 @@ function ClockIcon() {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="10" />
       <polyline points="12 6 12 12 16 14" />
+    </svg>
+  )
+}
+
+function ClipboardIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+      <line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/>
+      <line x1="9" y1="17" x2="13" y2="17"/>
     </svg>
   )
 }
