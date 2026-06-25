@@ -265,6 +265,7 @@ const DEFAULT_SETTINGS: UserSettings = {
   averageMpg: 6.5,
   currency: 'USD',
   baseState: 'IN',
+  isPremium: false,
 }
 
 export async function getSettings(): Promise<UserSettings> {

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { getDVIRInspections, saveDVIRInspection, deleteDVIRInspection } from '../lib/db'
 import { generateDVIRPdf } from '../lib/pdf'
+import { usePremium } from '../lib/usePremium'
 import type { DVIRInspection, DVIRItem } from '../lib/types'
 
 const CHECKLIST_CATEGORIES: { category: string; items: string[] }[] = [
@@ -17,6 +18,7 @@ const CHECKLIST_CATEGORIES: { category: string; items: string[] }[] = [
 ]
 
 export default function DVIR() {
+  const { isPremium, loading } = usePremium()
   const [inspections, setInspections] = useState<DVIRInspection[]>([])
   const [mode, setMode] = useState<'list' | 'inspect'>('list')
   const [inspectionType, setInspectionType] = useState<'pre-trip' | 'post-trip'>('pre-trip')
@@ -28,7 +30,6 @@ export default function DVIR() {
   const [remarks, setRemarks] = useState('')
   const [items, setItems] = useState<DVIRItem[]>([])
   const [signature, setSignature] = useState<string | null>(null)
-  const [signing, setSigning] = useState(false)
   const [coordinates, setCoordinates] = useState<{ lat: number; lng: number } | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -71,7 +72,6 @@ export default function DVIR() {
 
   // Signature pad
   const startSign = () => {
-    setSigning(true)
     const canvas = canvasRef.current
     if (!canvas) return
     canvas.width = 280
@@ -154,6 +154,29 @@ export default function DVIR() {
     return acc
   }, {} as Record<string, DVIRItem[]>)
 
+  if (loading) {
+    return <div className="px-4 pt-4 text-center"><div className="w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin mx-auto" /></div>
+  }
+
+  if (!isPremium) {
+    return (
+      <div className="px-4 pt-4 pb-24 space-y-4">
+        <h1 className="text-xl font-bold text-white">DVIR</h1>
+        <div className="glass rounded-2xl p-8 text-center space-y-3">
+          <span className="text-4xl">👑</span>
+          <h2 className="text-lg font-bold text-white">Premium Feature</h2>
+          <p className="text-sm text-slate-400">
+            Driver Vehicle Inspection Reports (DVIR) are available exclusively on the Premium plan.
+          </p>
+          <a href="/account"
+            className="inline-block bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-2.5 rounded-xl btn-active">
+            Upgrade to Premium
+          </a>
+        </div>
+      </div>
+    )
+  }
+
   if (mode === 'inspect') {
     return (
       <div className="px-4 pt-4 pb-24 space-y-4">
@@ -208,7 +231,7 @@ export default function DVIR() {
           <div key={category} className="glass rounded-2xl p-4">
             <h3 className="text-sm font-semibold text-emerald-400 mb-2">{category}</h3>
             <div className="space-y-2">
-              {catItems.map((item, idx) => {
+              {catItems.map((item) => {
                 const globalIdx = items.indexOf(item)
                 return (
                   <div key={item.name} className="flex items-start gap-2 p-2 rounded-lg bg-slate-900/50">

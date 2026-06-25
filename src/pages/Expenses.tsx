@@ -4,11 +4,6 @@ import type { Expense, ExpenseCategory } from '../lib/types'
 import { createWorker } from 'tesseract.js'
 
 const CATEGORIES: ExpenseCategory[] = ['fuel', 'maintenance', 'tolls', 'food', 'lodging', 'insurance', 'payment', 'other']
-const CATEGORY_COLORS: Record<string, string> = {
-  fuel: 'text-orange-400', maintenance: 'text-yellow-400', tolls: 'text-blue-400',
-  food: 'text-green-400', lodging: 'text-purple-400', insurance: 'text-cyan-400',
-  payment: 'text-pink-400', other: 'text-slate-400',
-}
 const CATEGORY_ICONS: Record<string, string> = {
   fuel: '⛽', maintenance: '🔧', tolls: '🛣️', food: '🍔',
   lodging: '🏨', insurance: '🛡️', payment: '💳', other: '📋',
@@ -100,7 +95,6 @@ export default function Expenses() {
   }, [expenses])
 
   const filtered = filterCat === 'all' ? expenses : expenses.filter(e => e.category === filterCat)
-  const total = filtered.reduce((s, e) => s + e.amount, 0)
   const allTotal = expenses.reduce((s, e) => s + e.amount, 0)
   const fuelTotal = expenses.filter(e => e.category === 'fuel').reduce((s, e) => s + e.amount, 0)
   const fuelGallonsTotal = expenses.filter(e => e.fuelGallons).reduce((s, e) => s + (e.fuelGallons || 0), 0)

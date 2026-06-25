@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { getExpenses, calculateIFTA } from '../lib/db'
-import type { IFTACalculationResult, IFTADetailRow } from '../lib/db'
+import { usePremium } from '../lib/usePremium'
+import type { IFTACalculationResult } from '../lib/db'
 
 const STATES = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY']
 
@@ -26,17 +27,18 @@ function formatCurrency(n: number) {
 }
 
 export default function IFTA() {
+  const { isPremium } = usePremium()
   const [period, setPeriod] = useState(getCurrentQuarter())
   const [stateMiles, setStateMiles] = useState<Record<string, string>>({})
   const [result, setResult] = useState<IFTACalculationResult | null>(null)
   const [fuelPurchases, setFuelPurchases] = useState<{ state: string; gallons: number }[]>([])
-  const [loaded, setLoaded] = useState(false)
+  // const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     getExpenses().then(expenses => {
       const fuel = expenses.filter(e => e.category === 'fuel' && e.fuelGallons)
       setFuelPurchases(fuel.map(e => ({ state: e.fuelState || 'IN', gallons: e.fuelGallons || 0 })))
-    }).then(() => setLoaded(true))
+    })
   }, [])
 
   const totalEntered = Object.values(stateMiles).reduce((s, v) => s + (parseFloat(v) || 0), 0)
@@ -175,10 +177,16 @@ export default function IFTA() {
           <div className="glass rounded-2xl p-4">
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-sm font-semibold text-slate-300">State Breakdown</h2>
-              <button onClick={handleExportCSV}
-                className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-600/50 btn-active">
-                Export CSV
-              </button>
+              {isPremium ? (
+                <button onClick={handleExportCSV}
+                  className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-600/50 btn-active">
+                  Export CSV
+                </button>
+              ) : (
+                <span className="text-[10px] text-slate-500 flex items-center gap-1">
+                  👑 <span>Premium only</span>
+                </span>
+              )}
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-xs">

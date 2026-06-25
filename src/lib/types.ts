@@ -349,4 +349,8 @@ export interface UserSettings {
   currency: string
   /** State for IFTA base */
   baseState: string
+  /** Premium subscription status */
+  isPremium: boolean
+  /** Premium expiry date (ISO 8601) */
+  premiumExpiry?: string
 }

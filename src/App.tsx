@@ -9,6 +9,7 @@ import DVIR from './pages/DVIR'
 import GPSTracker from './pages/GPSTracker'
 import Compliance from './pages/Compliance'
 import IFTA from './pages/IFTA'
+import Upgrade from './pages/Upgrade'
 import AuthPage from './pages/AuthPage'
 
 export default function App() {
@@ -41,6 +42,7 @@ export default function App() {
         {page === 'detention' && <Detention />}
         {page === 'compliance' && <Compliance />}
         {page === 'ifta' && <IFTA />}
+        {page === 'account' && <Upgrade />}
       </main>
       <Navbar active={page} onNavigate={setPage} />
     </div>

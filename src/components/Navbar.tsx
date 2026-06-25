@@ -1,5 +1,4 @@
 import { type JSX } from 'react'
-import { UserButton, useUser } from '@clerk/clerk-react'
 
 interface Tab {
   id: string
@@ -16,11 +15,10 @@ const tabs: Tab[] = [
   { id: 'detention', label: 'Wait', icon: <ClockIcon /> },
   { id: 'compliance', label: 'Compliance', icon: <ShieldIcon /> },
   { id: 'ifta', label: 'IFTA', icon: <TaxIcon /> },
+  { id: 'account', label: 'Account', icon: <UserIcon /> },
 ]
 
 export default function Navbar({ active, onNavigate }: { active: string; onNavigate: (id: string) => void }) {
-  const { user } = useUser()
-
   return (
     <nav className="fixed bottom-0 inset-x-0 z-50 bg-slate-900/95 backdrop-blur-md border-t border-slate-700/50 safe-bottom">
       <div className="flex justify-around items-center h-16 max-w-lg mx-auto">
@@ -40,20 +38,6 @@ export default function Navbar({ active, onNavigate }: { active: string; onNavig
             </span>
           </button>
         ))}
-        {/* User avatar */}
-        <div className="flex flex-col items-center gap-0.5 px-2 py-1 min-w-0">
-          <UserButton
-            appearance={{
-              elements: {
-                userButtonAvatarBox: 'w-5 h-5',
-                userButtonTrigger: 'focus:shadow-none',
-              },
-            }}
-          />
-          <span className="text-[10px] font-medium text-slate-500 truncate max-w-full">
-            {user?.firstName || 'User'}
-          </span>
-        </div>
       </div>
     </nav>
   )
@@ -138,6 +122,15 @@ function TaxIcon() {
       <line x1="16" y1="13" x2="8" y2="13" />
       <line x1="16" y1="17" x2="8" y2="17" />
       <polyline points="10 9 9 9 8 9" />
+    </svg>
+  )
+}
+
+function UserIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
     </svg>
   )
 }

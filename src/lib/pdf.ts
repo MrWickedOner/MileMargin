@@ -169,7 +169,6 @@ export function generateDVIRPdf(inspection: import('./types').DVIRInspection): v
   const doc = new jsPDF({ format: 'letter', unit: 'in' })
   const pageWidth = 8.5
   const margin = 0.75
-  const contentWidth = pageWidth - margin * 2
   let y = margin
 
   const setColor = (hex: string) => {

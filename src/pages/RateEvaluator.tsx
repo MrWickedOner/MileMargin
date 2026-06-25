@@ -1,11 +1,14 @@
 import { useState, useEffect, useCallback } from 'react'
 import { evaluateRate, getRateEvaluations, getRateEvaluationsThisMonth, getSettings } from '../lib/db'
 import { generateRateVerificationPdf } from '../lib/pdf'
-import type { RateEvaluation, UserSettings } from '../lib/types'
+import { usePremium } from '../lib/usePremium'
+import type { RateEvaluation } from '../lib/types'
 
 const FREE_TIER_LIMIT = 5
 
 export default function RateEvaluator() {
+  const { isPremium } = usePremium()
+
   // Form inputs
   const [customer, setCustomer] = useState('')
   const [origin, setOrigin] = useState('')
@@ -25,12 +28,10 @@ export default function RateEvaluator() {
   const [history, setHistory] = useState<RateEvaluation[]>([])
   const [loading, setLoading] = useState(false)
   const [monthlyCount, setMonthlyCount] = useState(0)
-  const [settings, setSettings] = useState<UserSettings | null>(null)
 
   // Load settings and history on mount
   useEffect(() => {
     getSettings().then(s => {
-      setSettings(s)
       setCpm(s.operatingCPM)
       setFuelPrice(s.fuelPricePerGallon)
       setMpg(s.averageMpg)
@@ -55,7 +56,7 @@ export default function RateEvaluator() {
   const profitMargin = numRevenue > 0 ? (estProfit / numRevenue) * 100 : 0
   const isProfitable = estProfit >= 0
 
-  const atLimit = monthlyCount >= FREE_TIER_LIMIT && !settings // free tier check
+  const atLimit = !isPremium && monthlyCount >= FREE_TIER_LIMIT
 
   const handleEvaluate = useCallback(async () => {
     if (!revenue || !miles || numMiles <= 0) return
