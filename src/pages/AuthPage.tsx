@@ -1,7 +1,7 @@
 import { SignIn, SignUp } from '@clerk/clerk-react'
 import { useState } from 'react'
 
-export default function AuthPage() {
+export default function AuthPage({ onNavigate }: { onNavigate?: (page: string) => void }) {
   const [mode, setMode] = useState<'sign-in' | 'sign-up'>('sign-in')
 
   return (
@@ -9,7 +9,9 @@ export default function AuthPage() {
       <div className="w-full max-w-sm">
         {/* Logo / Brand */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white">MileMargin</h1>
+          <button onClick={() => onNavigate?.('landing')} className="text-2xl font-bold text-white hover:text-emerald-400 transition-colors">
+            <span className="text-emerald-400">Mile</span>Margin
+          </button>
           <p className="text-sm text-slate-400 mt-1">Your Profit Co-Pilot</p>
         </div>
 
