@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useUser } from '@clerk/clerk-react'
+import { Analytics } from '@vercel/analytics/react'
 import Navbar from './components/Navbar'
 import Dashboard from './pages/Dashboard'
 import RateEvaluator from './pages/RateEvaluator'
@@ -33,6 +34,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 safe-top">
+      <Analytics />
       <main className="max-w-lg mx-auto pb-16">
         {page === 'dashboard' && <Dashboard onNavigate={setPage} />}
         {page === 'route' && <GPSTracker />}
