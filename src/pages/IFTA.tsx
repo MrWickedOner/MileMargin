@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { getExpenses, calculateIFTA } from '../lib/db'
 import { usePremium } from '../lib/usePremium'
-import type { IFTACalculationResult, IFTADetailRow } from '../lib/db'
+import type { IFTACalculationResult } from '../lib/db'
 
 const STATES = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY']
 
@@ -32,13 +32,13 @@ export default function IFTA() {
   const [stateMiles, setStateMiles] = useState<Record<string, string>>({})
   const [result, setResult] = useState<IFTACalculationResult | null>(null)
   const [fuelPurchases, setFuelPurchases] = useState<{ state: string; gallons: number }[]>([])
-  const [loaded, setLoaded] = useState(false)
+  // const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     getExpenses().then(expenses => {
       const fuel = expenses.filter(e => e.category === 'fuel' && e.fuelGallons)
       setFuelPurchases(fuel.map(e => ({ state: e.fuelState || 'IN', gallons: e.fuelGallons || 0 })))
-    }).then(() => setLoaded(true))
+    })
   }, [])
 
   const totalEntered = Object.values(stateMiles).reduce((s, v) => s + (parseFloat(v) || 0), 0)

@@ -1,11 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { getDetentionLogs, saveDetentionLog, deleteDetentionLog, haversineDistance } from '../lib/db'
+import { getDetentionLogs, saveDetentionLog, deleteDetentionLog } from '../lib/db'
 import type { DetentionLog } from '../lib/types'
 
 const DETENTION_RATE = 25 // $ per hour after free period
 const FREE_PERIOD_MINUTES = 120 // industry standard 2-hour free window
-const GEOFENCE_RADIUS_MILES = 0.5 // radius to auto-detect arrival
-
 export default function Detention() {
   const [logs, setLogs] = useState<DetentionLog[]>([])
   const [running, setRunning] = useState<DetentionLog | null>(null)
@@ -16,10 +14,7 @@ export default function Detention() {
   const [gpsCoords, setGpsCoords] = useState<{ lat: number; lng: number } | null>(null)
   const [watchMode, setWatchMode] = useState<'manual' | 'auto'>('manual')
   const watchIdRef = useRef<number | null>(null)
-  const [currentLogs, setCurrentLogs] = useState<DetentionLog[]>([])
-
   useEffect(() => { getDetentionLogs().then(setLogs) }, [])
-  useEffect(() => { getDetentionLogs().then(setCurrentLogs) }, [])
 
   // Timer effect
   useEffect(() => {

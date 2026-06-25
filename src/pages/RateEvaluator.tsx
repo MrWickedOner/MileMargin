@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { evaluateRate, getRateEvaluations, getRateEvaluationsThisMonth, getSettings } from '../lib/db'
 import { generateRateVerificationPdf } from '../lib/pdf'
 import { usePremium } from '../lib/usePremium'
-import type { RateEvaluation, UserSettings } from '../lib/types'
+import type { RateEvaluation } from '../lib/types'
 
 const FREE_TIER_LIMIT = 5
 
@@ -28,12 +28,10 @@ export default function RateEvaluator() {
   const [history, setHistory] = useState<RateEvaluation[]>([])
   const [loading, setLoading] = useState(false)
   const [monthlyCount, setMonthlyCount] = useState(0)
-  const [settings, setSettings] = useState<UserSettings | null>(null)
 
   // Load settings and history on mount
   useEffect(() => {
     getSettings().then(s => {
-      setSettings(s)
       setCpm(s.operatingCPM)
       setFuelPrice(s.fuelPricePerGallon)
       setMpg(s.averageMpg)

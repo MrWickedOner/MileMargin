@@ -19,8 +19,6 @@ const tabs: Tab[] = [
 ]
 
 export default function Navbar({ active, onNavigate }: { active: string; onNavigate: (id: string) => void }) {
-  const { user } = useUser()
-
   return (
     <nav className="fixed bottom-0 inset-x-0 z-50 bg-slate-900/95 backdrop-blur-md border-t border-slate-700/50 safe-bottom">
       <div className="flex justify-around items-center h-16 max-w-lg mx-auto">

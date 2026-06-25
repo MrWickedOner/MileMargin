@@ -30,7 +30,6 @@ export default function DVIR() {
   const [remarks, setRemarks] = useState('')
   const [items, setItems] = useState<DVIRItem[]>([])
   const [signature, setSignature] = useState<string | null>(null)
-  const [signing, setSigning] = useState(false)
   const [coordinates, setCoordinates] = useState<{ lat: number; lng: number } | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -73,7 +72,6 @@ export default function DVIR() {
 
   // Signature pad
   const startSign = () => {
-    setSigning(true)
     const canvas = canvasRef.current
     if (!canvas) return
     canvas.width = 280
@@ -233,7 +231,7 @@ export default function DVIR() {
           <div key={category} className="glass rounded-2xl p-4">
             <h3 className="text-sm font-semibold text-emerald-400 mb-2">{category}</h3>
             <div className="space-y-2">
-              {catItems.map((item, idx) => {
+              {catItems.map((item) => {
                 const globalIdx = items.indexOf(item)
                 return (
                   <div key={item.name} className="flex items-start gap-2 p-2 rounded-lg bg-slate-900/50">
