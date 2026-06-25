@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { getComplianceDocuments, saveComplianceDocument, deleteComplianceDocument, getActiveComplianceAlerts, computeDocStatus } from '../lib/db'
+import { usePremium } from '../lib/usePremium'
 import type { ComplianceDocument } from '../lib/types'
 
 const DEFAULT_DOCUMENTS = [
@@ -18,6 +19,7 @@ const DEFAULT_DOCUMENTS = [
 const FREE_TIER_LIMIT = 3
 
 export default function Compliance() {
+  const { isPremium } = usePremium()
   const [docs, setDocs] = useState<ComplianceDocument[]>([])
   const [showForm, setShowForm] = useState(false)
   const [alertsCount, setAlertsCount] = useState(0)
@@ -66,7 +68,7 @@ export default function Compliance() {
   }, [docs])
 
   const handleQuickAdd = useCallback(async (template: typeof DEFAULT_DOCUMENTS[0]) => {
-    if (alertsCount >= FREE_TIER_LIMIT) {
+    if (!isPremium && alertsCount >= FREE_TIER_LIMIT) {
       alert(`Free tier limited to ${FREE_TIER_LIMIT} active alerts. Upgrade to Premium for unlimited compliance tracking!`)
       return
     }
@@ -101,7 +103,7 @@ export default function Compliance() {
           <p className="text-sm text-slate-400">Never miss a renewal</p>
         </div>
         <div className="text-right">
-          <p className="text-xs text-slate-500">{alertsCount}/{FREE_TIER_LIMIT} active alerts</p>
+          <p className="text-xs text-slate-500">{isPremium ? '∞' : `${alertsCount}/${FREE_TIER_LIMIT}`} active alerts</p>
         </div>
       </div>
 

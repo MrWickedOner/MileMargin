@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { saveRoute, getRoutes, deleteRoute, haversineDistance, computeRouteDistance, detectState } from '../lib/db'
 import type { Route, RoutePoint, TripStateSegment } from '../lib/types'
+import { usePremium } from '../lib/usePremium'
 
 export default function GPSTracker() {
+  const { isPremium, loading } = usePremium()
   const [routes, setRoutes] = useState<Route[]>([])
   const [tracking, setTracking] = useState(false)
   const [activeRoute, setActiveRoute] = useState<Route | null>(null)
@@ -155,6 +157,29 @@ export default function GPSTracker() {
     const m = Math.floor((seconds % 3600) / 60)
     const s = seconds % 60
     return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+  }
+
+  if (loading) {
+    return <div className="px-4 pt-4 text-center"><div className="w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin mx-auto" /></div>
+  }
+
+  if (!isPremium) {
+    return (
+      <div className="px-4 pt-4 pb-24 space-y-4">
+        <h1 className="text-xl font-bold text-white">GPS Route Tracker</h1>
+        <div className="glass rounded-2xl p-8 text-center space-y-3">
+          <span className="text-4xl">👑</span>
+          <h2 className="text-lg font-bold text-white">Premium Feature</h2>
+          <p className="text-sm text-slate-400">
+            Automatic GPS route tracking and state mileage logging are available exclusively on the Premium plan.
+          </p>
+          <a href="/account"
+            className="inline-block bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-2.5 rounded-xl btn-active">
+            Upgrade to Premium
+          </a>
+        </div>
+      </div>
+    )
   }
 
   return (

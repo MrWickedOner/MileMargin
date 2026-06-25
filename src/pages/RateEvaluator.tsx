@@ -1,11 +1,14 @@
 import { useState, useEffect, useCallback } from 'react'
 import { evaluateRate, getRateEvaluations, getRateEvaluationsThisMonth, getSettings } from '../lib/db'
 import { generateRateVerificationPdf } from '../lib/pdf'
+import { usePremium } from '../lib/usePremium'
 import type { RateEvaluation, UserSettings } from '../lib/types'
 
 const FREE_TIER_LIMIT = 5
 
 export default function RateEvaluator() {
+  const { isPremium } = usePremium()
+
   // Form inputs
   const [customer, setCustomer] = useState('')
   const [origin, setOrigin] = useState('')
@@ -55,7 +58,7 @@ export default function RateEvaluator() {
   const profitMargin = numRevenue > 0 ? (estProfit / numRevenue) * 100 : 0
   const isProfitable = estProfit >= 0
 
-  const atLimit = monthlyCount >= FREE_TIER_LIMIT && !settings // free tier check
+  const atLimit = !isPremium && monthlyCount >= FREE_TIER_LIMIT
 
   const handleEvaluate = useCallback(async () => {
     if (!revenue || !miles || numMiles <= 0) return
