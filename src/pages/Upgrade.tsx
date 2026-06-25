@@ -156,23 +156,6 @@ export default function Upgrade() {
         </div>
       </div>
 
-      {/* Dev: Toggle Premium (for testing — remove in production) */}
-      <div className="glass rounded-xl p-4">
-        <p className="text-[10px] text-slate-600 uppercase tracking-wider mb-2">Dev Tools</p>
-        <div className="flex gap-2">
-          {!isPremium ? (
-            <button onClick={handleActivatePremium}
-              className="text-xs bg-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-lg border border-emerald-500/30 btn-active">
-              Activate Premium (Dev)
-            </button>
-          ) : (
-            <button onClick={handleDeactivatePremium}
-              className="text-xs bg-red-500/20 text-red-400 px-3 py-1.5 rounded-lg border border-red-500/30 btn-active">
-              Deactivate Premium (Dev)
-            </button>
-          )}
-        </div>
       </div>
-    </div>
   )
 }
