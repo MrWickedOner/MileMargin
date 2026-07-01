@@ -14,6 +14,7 @@ const tabs: Tab[] = [
   { id: 'expenses', label: 'Expenses', icon: <WalletIcon /> },
   { id: 'detention', label: 'Wait', icon: <ClockIcon /> },
   { id: 'compliance', label: 'Compliance', icon: <ShieldIcon /> },
+  { id: 'benchmark', label: 'Benchmark', icon: <TrendIcon /> },
   { id: 'ifta', label: 'IFTA', icon: <TaxIcon /> },
   { id: 'exports', label: 'Exports', icon: <FileIcon /> },
   { id: 'account', label: 'Account', icon: <UserIcon /> },
@@ -143,6 +144,15 @@ function FileIcon() {
       <polyline points="14 2 14 8 20 8"/>
       <line x1="16" y1="13" x2="8" y2="13"/>
       <line x1="16" y1="17" x2="8" y2="17"/>
+    </svg>
+  )
+}
+
+function TrendIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+      <polyline points="17 6 23 6 23 12"/>
     </svg>
   )
 }
