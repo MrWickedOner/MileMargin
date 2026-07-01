@@ -10,6 +10,7 @@ import DVIR from './pages/DVIR'
 import GPSTracker from './pages/GPSTracker'
 import Compliance from './pages/Compliance'
 import IFTA from './pages/IFTA'
+import RateBenchmarking from './pages/RateBenchmarking'
 import Upgrade from './pages/Upgrade'
 import AuthPage from './pages/AuthPage'
 
@@ -40,6 +41,7 @@ export default function App() {
         {page === 'route' && <GPSTracker />}
         {page === 'dvir' && <DVIR />}
         {page === 'rate' && <RateEvaluator />}
+        {page === 'benchmark' && <RateBenchmarking />}
         {page === 'expenses' && <Expenses />}
         {page === 'detention' && <Detention />}
         {page === 'compliance' && <Compliance />}

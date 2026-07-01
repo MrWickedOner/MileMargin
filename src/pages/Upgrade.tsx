@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getSettings, saveSettings } from '../lib/db'
+import { getSettings } from '../lib/db'
 import { useUser, UserButton } from '@clerk/clerk-react'
 
 const STRIPE_MONTHLY = 'https://buy.stripe.com/9B6eVc7rw2u54U12JEeME00'
@@ -33,22 +33,6 @@ export default function Upgrade() {
   useEffect(() => {
     getSettings().then(s => setSettings(s))
   }, [])
-
-  const handleActivatePremium = async () => {
-    const s = await getSettings()
-    s.isPremium = true
-    s.premiumExpiry = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
-    await saveSettings(s)
-    setSettings(s)
-  }
-
-  const handleDeactivatePremium = async () => {
-    const s = await getSettings()
-    s.isPremium = false
-    s.premiumExpiry = undefined
-    await saveSettings(s)
-    setSettings(s)
-  }
 
   const isPremium = settings?.isPremium || false
 
