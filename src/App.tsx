@@ -10,6 +10,7 @@ import GPSTracker from './pages/GPSTracker'
 import Compliance from './pages/Compliance'
 import IFTA from './pages/IFTA'
 import QBExport from './pages/QBExport'
+import MonthlyReport from './pages/MonthlyReport'
 import RateBenchmarking from './pages/RateBenchmarking'
 import Upgrade from './pages/Upgrade'
 import Landing from './pages/Landing'
@@ -86,6 +87,7 @@ export default function App() {
         {page === 'compliance' && <Compliance />}
         {page === 'ifta' && <IFTA />}
         {page === 'exports' && <QBExport />}
+        {page === 'report' && <MonthlyReport />}
         {page === 'account' && <Upgrade />}
       </main>
       <Navbar active={page} onNavigate={navigate} />

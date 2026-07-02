@@ -17,6 +17,7 @@ const tabs: Tab[] = [
   { id: 'benchmark', label: 'Benchmark', icon: <TrendIcon /> },
   { id: 'ifta', label: 'IFTA', icon: <TaxIcon /> },
   { id: 'exports', label: 'Exports', icon: <FileIcon /> },
+  { id: 'report', label: 'Report', icon: <FileIcon /> },
   { id: 'account', label: 'Account', icon: <UserIcon /> },
 ]
 
